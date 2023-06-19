@@ -16,7 +16,7 @@ export const HomePage = () => {
 
  const createNewHabbit = () =>{
     setCreateHabbit(true);
-    setHabbitName("");setrepeat("");setGoal("");setTimeofday("");setStartdate("");
+    setHabbitName("");setrepeat("monthly");setGoal("");setTimeofday("");setStartdate("");
  }
   const handleSubmitBtn = ()=>{
     if(editHabbit)
@@ -73,6 +73,7 @@ export const HomePage = () => {
             <select
               name="repeat"
               id="repeat"
+              
               onChange={(e) => setrepeat(e.target.value)}
             >
               <option value="weekly">weekly</option>
