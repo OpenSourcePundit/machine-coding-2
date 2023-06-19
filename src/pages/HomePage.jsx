@@ -1,10 +1,10 @@
-import { useState,useContext } from "react";
+import { useState, useContext } from "react";
 import { HabbitContext } from "../context/habbitContext";
 import { Link } from "react-router-dom";
 
 export const HomePage = () => {
-
-  const {habbits,setHabbits,archive,setArchive} = useContext(HabbitContext);
+  const { habbits, setHabbits, archive, setArchive } =
+    useContext(HabbitContext);
   const [createHabbit, setCreateHabbit] = useState(false);
   const [editHabbit, setEditHabbit] = useState(false);
 
@@ -14,49 +14,54 @@ export const HomePage = () => {
   const [timeofday, setTimeofday] = useState("");
   const [startdate, setStartdate] = useState("");
 
- const createNewHabbit = () =>{
+  const createNewHabbit = () => {
     setCreateHabbit(true);
-    setHabbitName("");setrepeat("monthly");setGoal("");setTimeofday("");setStartdate("");
- }
-  const handleSubmitBtn = ()=>{
-    if(editHabbit)
-    {
-        // const newAddress = [...address];
-        // newAddress.splice(isEdit.index, 1, {Add_name: Add_name, Hno: Hno, street: street, city: city, state: state, Pin: Pin, Phone: Phone})
-        // setEditAddress(false);
-        // dataDispatch({
-        //     type:"editAddress",
-        //     payload: newAddress,
-        // })
+    setHabbitName("");
+    setrepeat("monthly");
+    setGoal("");
+    setTimeofday("");
+    setStartdate("");
+  };
+  const handleSubmitBtn = () => {
+    if (editHabbit) {
+      // const newAddress = [...address];
+      // newAddress.splice(isEdit.index, 1, {Add_name: Add_name, Hno: Hno, street: street, city: city, state: state, Pin: Pin, Phone: Phone})
+      // setEditAddress(false);
+      // dataDispatch({
+      //     type:"editAddress",
+      //     payload: newAddress,
+      // })
+    } else {
+      setHabbits([
+        ...habbits,
+        {
+          name: habbitName,
+          repeat: repeat,
+          timeofday: timeofday,
+          startdate: startdate,
+          show: false,
+        },
+      ]);
+      setEditHabbit(false);
+      setCreateHabbit(false);
     }
-    else{
+  };
 
-        setHabbits([...habbits,{name:habbitName,repeat:repeat,timeofday:timeofday,startdate:startdate}])
-        setEditHabbit(false);
-        setCreateHabbit(false);
-    }
-}
-
-  const MoveToArchive = (index) =>{
-    setArchive([...archive,habbits[index]])
+  const MoveToArchive = (index) => {
+    setArchive([...archive, habbits[index]]);
     const newHabbits = [...habbits];
-    newHabbits.splice(index,1);
-    setHabbits([...newHabbits]);    
-  }
-  const deleteFunc = (index) =>{
-    const newHabbits = [...habbits];
-    newHabbits.splice(index,1);
+    newHabbits.splice(index, 1);
     setHabbits([...newHabbits]);
-  }
-  const editHabbitfunction = (index) =>{
-
-  }
-
+  };
+  const deleteFunc = (index) => {
+    const newHabbits = [...habbits];
+    newHabbits.splice(index, 1);
+    setHabbits([...newHabbits]);
+  };
+  const editHabbitfunction = (index) => {};
 
   return (
     <div className="container">
-        {console.log(habbits,"createHabbit",createHabbit)}
-        {console.log("carch",archive)}
       {createHabbit && (
         <div className="create-habbit-box">
           <h2>Create New Habit</h2>
@@ -73,7 +78,7 @@ export const HomePage = () => {
             <select
               name="repeat"
               id="repeat"
-              
+              value={repeat}
               onChange={(e) => setrepeat(e.target.value)}
             >
               <option value="weekly">weekly</option>
@@ -85,6 +90,7 @@ export const HomePage = () => {
             <select
               name="goal"
               id="goal"
+              value={goal}
               onChange={(e) => setGoal(e.target.value)}
             >
               <option value="1 time">1 time</option>
@@ -122,27 +128,66 @@ export const HomePage = () => {
         </div>
       )}
 
-
-      {!createHabbit &&(
+      {!createHabbit && !editHabbit && (
         <div className="container-main">
-        <button onClick={()=>createNewHabbit()}> CREATE NEW HABIT</button>
-        <Link to="/archive"> ARCHIVE</Link>
-        {habbits.map((habb,index)=>{
-            return(
-                <div className="habbit-card" style={{height:"250px",width:"500px",backgroundColor:"lightgreen"}}>
-                    <h3>Habit Name: {habb.name}</h3>
+          <button onClick={() => createNewHabbit()}> CREATE NEW HABIT</button>
+          <Link to="/archive"> ARCHIVE</Link>
+          {habbits.map((habb, index) => {
+            return (
+              <div
+                className="habbit-card"
+                style={{
+                  height: "250px",
+                  width: "500px",
+                  backgroundColor: habb.show === true ? "orange" : "lightgreen",
+                }}
+                onClick={() => {
+                  let newHabbit1 = [...habbits];
+                  newHabbit1[index].show = !newHabbit1[index].show;
+                  setHabbits([...newHabbit1]);
+                }}
+              >
+                <h3>Habit Name: {habb.name}</h3>
+                {habb.show && (
+                  <>
                     <p> Repeat: {habb.repeat}</p>
                     <p> Time: {habb.timeofday}</p>
                     <p> Start: {habb.startdate}</p>
-                    <button className="edit-btn" onClick={()=>{editHabbitfunction(index)}}>Edit</button>
-                    <button className="archive-btn" onClick={()=>{MoveToArchive(index)}}>Archive</button>
-                    <button className="delete-btn"  onClick={()=>{deleteFunc(index)}}>Delete</button>
-                </div>
-            )
-        })}
-      </div>
+                  </>
+                )}
+                <button
+                  className="edit-btn"
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    editHabbitfunction(index);
+                  }}
+                >
+                  Edit
+                </button>
+                <button
+                  className="archive-btn"
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    MoveToArchive(index);
+                  }}
+                 
+                >
+                  Archive
+                </button>
+                <button
+                  className="delete-btn"
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    deleteFunc(index);
+                  }}
+                >
+                  Delete
+                </button>
+              </div>
+            );
+          })}
+        </div>
       )}
-      
     </div>
   );
 };
